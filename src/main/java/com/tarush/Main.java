@@ -9,13 +9,6 @@ public class Main {
 
         System.out.println("Deep Packet Inspection Engine Started");
 
-//        byte firstByte = 0x45;
-//        IPParser.parseVersionAndIHL(firstByte);
-//
-//        byte high = (byte) 0x01;
-//        byte low = (byte) 0xBB;
-//        int port = TCPParser.parsePort(high, low);
-//        System.out.println("Destination Port : " + port);
         byte[] packet = new byte[34];
         packet[14] = 0x45;              // Version + IHL
 
