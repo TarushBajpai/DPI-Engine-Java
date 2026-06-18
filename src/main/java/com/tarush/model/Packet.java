@@ -1,7 +1,7 @@
 package com.tarush.model;
 
 public class Packet {
-    private byte[] data;
+    private final byte[] data;
 
     public Packet(byte[] data){
         this.data = data;
