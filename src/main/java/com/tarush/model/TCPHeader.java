@@ -71,4 +71,19 @@ public class TCPHeader {
     public boolean isUrg() {
         return urg;
     }
+
+    @Override
+    public String toString() {
+        return "Source Port: " + sourcePort +
+                "\nDestination Port: " + destinationPort +
+                "\nSequence Number: " + sequenceNumber +
+                "\nAcknowledgment Number: " + acknowledgmentNumber +
+                "\nData Offset: " + dataOffset +
+                "\nFIN: " + fin +
+                "\nSYN: " + syn +
+                "\nRST: " + rst +
+                "\nPSH: " + psh +
+                "\nACK: " + ack +
+                "\nURG: " + urg;
+    }
 }

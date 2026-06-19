@@ -23,4 +23,11 @@ public class EthernetHeader {
         return etherType;
     }
 
+    @Override
+    public String toString() {
+        return "Destination MAC: " + destinationMAC +
+                "\nSource MAC: " + sourceMAC +
+                "\nEtherType: " + String.format("0x%04X", etherType);
+    }
+
 }

@@ -35,24 +35,13 @@ public class IPHeader {
         return protocol;
     }
 
-    //setters
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-    public void setHeaderLength(int headerLength) {
-        this.headerLength = headerLength;
-    }
-    public void setTotalLength(int totalLength) {
-        this.totalLength = totalLength;
-    }
-    public void setSourceIP(String sourceIP) {
-        this.sourceIP = sourceIP;
-    }
-    public void setDestinationIP(String destinationIP) {
-        this.destinationIP = destinationIP;
-    }
-    public void setProtocol(int protocol) {
-        this.protocol = protocol;
+    @Override
+    public String toString() {
+        return "Version: " + version +
+                "\nHeader Length: " + headerLength +
+                "\nTotal Length: " + totalLength +
+                "\nProtocol: " + protocol +
+                "\nSource IP: " + sourceIP +
+                "\nDestination IP: " + destinationIP;
     }
 }
