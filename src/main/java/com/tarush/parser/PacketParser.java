@@ -18,5 +18,9 @@ public class PacketParser {
 
         String applicationProtocol = ProtocolDetector.detect(tcp);
         System.out.println("Application Protocol: " + applicationProtocol);
+
+        int payloadOffset = 14 + ip.getHeaderLength() + tcp.getDataOffset();
+        String payload = PayloadParser.parse(packet, payloadOffset);
+        System.out.println(payload);
     }
 }
