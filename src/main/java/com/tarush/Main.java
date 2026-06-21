@@ -1,6 +1,7 @@
 package com.tarush;
 
 import com.tarush.factory.PacketFactory;
+import com.tarush.model.Packet;
 import com.tarush.parser.PacketParser;
 import com.tarush.parser.PayloadParser;
 
@@ -11,7 +12,8 @@ public class Main {
 
         System.out.println("Deep Packet Inspection Engine Started");
         byte[] packet = PacketFactory.createPacket();
-        PacketParser.parse(packet);
+        Packet parse = PacketParser.parse(packet);
+        System.out.println(parse);
     }
 
 }
