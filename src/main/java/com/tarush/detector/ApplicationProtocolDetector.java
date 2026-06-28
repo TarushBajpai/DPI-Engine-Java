@@ -2,7 +2,7 @@ package com.tarush.detector;
 
 import com.tarush.model.TCPHeader;
 
-public class ProtocolDetector {
+public class ApplicationProtocolDetector {
     public static String getProtocol(int port){
         switch(port){
             case 21: return "FTP";
