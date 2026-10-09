@@ -5,45 +5,78 @@ import com.tarush.detector.TransportProtocolDetector;
 import com.tarush.model.*;
 
 public class PacketParser {
+
     private static final int ETHERNET_HEADER_LENGTH = 14;
     private static final int ETHERNET_OFFSET = 0;
     private static final int IPV4_ETHERTYPE = 0x0800;
 
-    public static Packet parse(byte[] packet) {
+    public static Packet parse(byte[] packet, long timestampSeconds, long timestampMicroseconds) {
 
-        // ethernet
-        EthernetHeader ethernet = EthernetParser.parse(packet, ETHERNET_OFFSET);
-        if (ethernet.getEtherType() == IPV4_ETHERTYPE)
-        {
-            IPHeader ip = IPParser.parse(packet, ETHERNET_HEADER_LENGTH);
-            String transportProtocol = TransportProtocolDetector.detect(ip); //IP protocol
+        // Ethernet
+        EthernetHeader ethernet =
+                EthernetParser.parse(packet, ETHERNET_OFFSET);
 
-            if ("TCP".equals(transportProtocol))
-            {
+        if (ethernet.getEtherType() != IPV4_ETHERTYPE) {
+            return null;
+        }
 
-                int tcpOffset = ETHERNET_HEADER_LENGTH + ip.getHeaderLength();
-                TCPHeader tcp = TCPParser.parse(packet, tcpOffset);
+        // IPv4
+        IPHeader ip =
+                IPParser.parse(packet, ETHERNET_HEADER_LENGTH);
 
-                // protocol
-                String applicationProtocol = ApplicationProtocolDetector.detect(tcp);
+        // Transport protocol
+        String transportProtocol =
+                TransportProtocolDetector.detect(ip);
 
-                //  payload
-                int payloadOffset = ETHERNET_HEADER_LENGTH + ip.getHeaderLength() + tcp.getDataOffset();
+        int transportOffset =
+                ETHERNET_HEADER_LENGTH + ip.getHeaderLength();
 
-                String payloadString = PayloadParser.parse(packet, payloadOffset);
-                HTTPRequest request = null;
-                if ("HTTP".equals(applicationProtocol))
-                    request = HTTPParser.extract(payloadString);
+        // Default values
+        TCPHeader tcp = null;
+        UDPHeader udp = null;
+        ICMPHeader icmp = null;
 
-                return new Packet(ethernet, ip, tcp, applicationProtocol, payloadString, request);
-            } else if("UDP".equals(transportProtocol)) {
-                System.out.println("Transport Protocol : UDP (parser not implemented yet)");
-            } else if ("ICMP".equals(transportProtocol)) {
-                System.out.println("Transport Protocol : ICMP (parser not implemented yet)");
+        String applicationProtocol = "UNKNOWN";
+        String payloadString = "NO PAYLOAD";
+        HTTPRequest request = null;
+        if ("TCP".equals(transportProtocol)) {
+
+            tcp = TCPParser.parse(packet, transportOffset);
+
+            applicationProtocol =
+                    ApplicationProtocolDetector.detect(tcp);
+
+            int payloadOffset =
+                    transportOffset + tcp.getDataOffset();
+
+            payloadString =
+                    PayloadParser.parse(packet, payloadOffset);
+
+            if ("HTTP".equals(applicationProtocol)) {
+                request = HTTPParser.extract(payloadString);
             }
         }
-        return null;
+        else if ("UDP".equals(transportProtocol)) {
+
+            udp = UDPParser.parse(packet, transportOffset);
+        }
+        else if ("ICMP".equals(transportProtocol)) {
+
+            icmp = ICMPParser.parse(packet, transportOffset);
+        }
+
+        return new Packet(
+                ethernet,
+                ip,
+                tcp,
+                udp,
+                icmp,
+                transportProtocol,
+                applicationProtocol,
+                payloadString,
+                request,
+                timestampSeconds,
+                timestampMicroseconds
+        );
     }
 }
-
-
